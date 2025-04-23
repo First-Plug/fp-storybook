@@ -11,7 +11,7 @@ const meta = {
   argTypes: {
     variant: {
       control: "radio",
-      options: ["primary", "secondary", "delete", "text", "outline", "alert"],
+      options: ["primary", "secondary", "delete", "hover", "outline", "alert"],
     },
     size: {
       control: "select",
@@ -58,6 +58,38 @@ export const Secondary: Story = {
   },
 };
 
+export const Delete: Story = {
+  args: {
+    variant: "delete",
+    children: "delete button",
+    onClick: action("clicked"),
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const button = canvas.getByRole("button", { name: /delete button/i });
+
+    await expect(button).toBeInTheDocument();
+    await expect(button).toHaveClass("bg-error");
+    await userEvent.click(button);
+  },
+};
+
+export const Hover: Story = {
+  args: {
+    variant: "hover",
+    children: "hover button",
+    onClick: action("clicked"),
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const button = canvas.getByRole("button", { name: /hover button/i });
+
+    await expect(button).toBeInTheDocument();
+    await expect(button).toHaveClass("bg-white");
+    await userEvent.hover(button);
+  },
+};
+
 export const Big: Story = {
   args: {
     size: "big",
@@ -87,22 +119,6 @@ export const Disabled: Story = {
     await expect(button).toBeInTheDocument();
     await expect(button).toBeDisabled();
     await expect(button).toHaveClass("bg-light-grey");
-  },
-};
-
-export const Delete: Story = {
-  args: {
-    variant: "delete",
-    children: "delete button",
-    onClick: action("clicked"),
-  },
-  play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement);
-    const button = canvas.getByRole("button", { name: /delete button/i });
-
-    await expect(button).toBeInTheDocument();
-    await expect(button).toHaveClass("bg-error");
-    await userEvent.click(button);
   },
 };
 
