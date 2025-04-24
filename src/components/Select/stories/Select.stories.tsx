@@ -8,6 +8,7 @@ import {
   SelectOptions,
   SelectOption,
 } from "../index";
+import { useState } from "react";
 
 const meta = {
   title: "Components/Select/Select",
@@ -33,22 +34,24 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof Select>;
 
-export const Default: Story = {
-  args: {
-    value: "1",
-    onChange: action("onChange"),
-  },
-  render: (args) => (
-    <Select {...args}>
+const SelectWithState = () => {
+  const [value, setValue] = useState("1");
+
+  return (
+    <Select value={value} onChange={setValue}>
       <SelectLabel>Choose an option</SelectLabel>
-      <SelectTrigger />
+      <SelectTrigger placeholder="Select an option" />
       <SelectOptions>
         <SelectOption value="1">Option 1</SelectOption>
         <SelectOption value="2">Option 2</SelectOption>
         <SelectOption value="3">Option 3</SelectOption>
       </SelectOptions>
     </Select>
-  ),
+  );
+};
+
+export const Default: Story = {
+  render: () => <SelectWithState />,
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
 
@@ -69,7 +72,41 @@ export const Default: Story = {
     await userEvent.click(option2);
 
     await expect(optionsList).not.toBeVisible();
+    await expect(canvas.getByText("Option 2")).toBeInTheDocument();
   },
 };
 
-// ... (resto de las variantes del Select compuesto como antes)
+// Ejemplo de un Select controlado con estado inicial diferente
+const SelectWithCustomInitialState = () => {
+  const [value, setValue] = useState("2");
+
+  return (
+    <Select value={value} onChange={setValue}>
+      <SelectLabel>Choose an option</SelectLabel>
+      <SelectTrigger placeholder="Select an option" />
+      <SelectOptions>
+        <SelectOption value="1">Option 1</SelectOption>
+        <SelectOption value="2">Option 2</SelectOption>
+        <SelectOption value="3">Option 3</SelectOption>
+      </SelectOptions>
+    </Select>
+  );
+};
+
+export const WithInitialValue: Story = {
+  render: () => <SelectWithCustomInitialState />,
+};
+
+export const Disabled: Story = {
+  render: () => (
+    <Select value="1" onChange={action("onChange")} disabled>
+      <SelectLabel>Disabled Select</SelectLabel>
+      <SelectTrigger placeholder="Select disabled" />
+      <SelectOptions>
+        <SelectOption value="1">Option 1</SelectOption>
+        <SelectOption value="2">Option 2</SelectOption>
+        <SelectOption value="3">Option 3</SelectOption>
+      </SelectOptions>
+    </Select>
+  ),
+};
